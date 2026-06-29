@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Gamepad2, AlertCircle, CheckCircle } from 'lucide-react'
+import { Keyboard, AlertCircle, CheckCircle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.tsx'
 
 export default function RegisterPage() {
@@ -53,12 +53,12 @@ export default function RegisterPage() {
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-6">
           <Link to="/" className="flex items-center gap-2 mb-2">
-            <Gamepad2 className="w-10 h-10 text-neon-purple" />
+            <Keyboard className="w-10 h-10 text-neon-purple" />
             <span className="font-extrabold text-3xl tracking-wider bg-gradient-to-r from-neon-purple to-neon-cyan bg-clip-text text-transparent">
-              COMP.IO
+              WORDZZLE
             </span>
           </Link>
-          <p className="text-gray-400 text-sm">Create your puzzle identity</p>
+          <p className="text-gray-400 text-sm">Create your word master identity</p>
         </div>
 
         {/* Register Card */}

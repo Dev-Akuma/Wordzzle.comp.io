@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Gamepad2, Trophy, Swords, Zap, LogOut, Clock, Activity, EyeOff } from 'lucide-react'
+import { Keyboard, Trophy, Swords, Zap, LogOut, Clock, Activity, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.tsx'
 import { useSocket } from '../context/SocketContext.tsx'
 import { api } from '../services/api.ts'
@@ -129,16 +129,16 @@ export default function DashboardPage() {
       <nav className="border-b border-dark-800 bg-dark-950/80 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Gamepad2 className="w-6 h-6 text-neon-purple" />
+            <Keyboard className="w-6 h-6 text-neon-purple" />
             <span className="font-extrabold text-xl tracking-wider bg-gradient-to-r from-neon-purple to-neon-cyan bg-clip-text text-transparent">
-              COMP.IO
+              WORDZZLE
             </span>
           </div>
 
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-neon-emerald animate-pulse"></span>
-              <span className="text-xs font-semibold text-gray-400">Wordzzle PvP</span>
+              <span className="text-xs font-semibold text-gray-400">Lobby Online</span>
             </div>
             
             <div className="h-4 w-px bg-dark-800"></div>
