@@ -51,7 +51,7 @@ app:
   jwt:
     # 256-bit base64 secret: "compioSuperSecretJWTKeyThatIsLongEnoughToMeetTheRequirements"
     secret: Y29tcGlvU3VwZXJTZWNyZXRKV1RLZXlUaGF0SXNMb25nRW5vdWdoVG9NZWV0VGhlUmVxdWlyZW1lbnRz
-    expirationMs: 3600000 # 1 hour
+    expirationMs: 86400000 # 24 hours
     refreshExpirationMs: 604800000 # 7 days
   wordzzle:
     roundTimeLimitSeconds: 300 # 5 minutes
