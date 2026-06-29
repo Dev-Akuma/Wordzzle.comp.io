@@ -1,0 +1,58 @@
+spring:
+  profiles:
+    active: dev # Default active profile
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:compiodb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:compio}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+---
+# JWT and Game Configurations
+app:
+  jwt:
+    # 256-bit base64 secret: "compioSuperSecretJWTKeyThatIsLongEnoughToMeetTheRequirements"
+    secret: Y29tcGlvU3VwZXJTZWNyZXRKV1RLZXlUaGF0SXNMb25nRW5vdWdoVG9NZWV0VGhlUmVxdWlyZW1lbnRz
+    expirationMs: 3600000 # 1 hour
+    refreshExpirationMs: 604800000 # 7 days
+  wordzzle:
+    roundTimeLimitSeconds: 300 # 5 minutes
+    countdownSeconds: 3
