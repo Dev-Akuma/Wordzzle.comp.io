@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/ws/**").permitAll() // WebSocket gameplay
                 .requestMatchers("/h2-console/**").permitAll() // H2 developer console
+                .requestMatchers("/error").permitAll() // Allow error responses to propagate
                 .anyRequest().authenticated()
             );
 
