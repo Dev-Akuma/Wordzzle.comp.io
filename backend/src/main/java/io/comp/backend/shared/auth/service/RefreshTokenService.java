@@ -32,8 +32,11 @@ public class RefreshTokenService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         
-        // Remove existing token if any
-        refreshTokenRepository.findByUser(user).ifPresent(refreshTokenRepository::delete);
+        // Remove existing token if any and flush immediately to avoid Hibernate execution ordering conflicts
+        refreshTokenRepository.findByUser(user).ifPresent(token -> {
+            refreshTokenRepository.delete(token);
+            refreshTokenRepository.flush();
+        });
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
