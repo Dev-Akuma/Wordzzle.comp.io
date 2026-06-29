@@ -28,7 +28,8 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       return
     }
 
-    const wsUrl = `ws://localhost:8080/ws/game?token=${accessToken}`
+    const baseWsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8080'
+    const wsUrl = `${baseWsUrl}/ws/game?token=${accessToken}`
     const rws = new ReconnectingWebSocket(wsUrl, [], {
       connectionTimeout: 4000,
       maxRetries: 10

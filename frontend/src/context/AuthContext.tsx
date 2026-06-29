@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const storedRefreshToken = localStorage.getItem('refreshToken')
       if (storedRefreshToken) {
         try {
-          const res = await axios.post('http://localhost:8080/api/auth/refresh', {
+          const authBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+          const res = await axios.post(`${authBaseUrl}/auth/refresh`, {
             refreshToken: storedRefreshToken
           })
           const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res.data
@@ -121,7 +122,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
 
           try {
-            const res = await axios.post('http://localhost:8080/api/auth/refresh', {
+            const authBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+            const res = await axios.post(`${authBaseUrl}/auth/refresh`, {
               refreshToken: storedRefreshToken
             })
             const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res.data
