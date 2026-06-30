@@ -120,11 +120,30 @@ export default function GamePage() {
 
       // Celebrate if User Won!
       if (payload.winnerUsername === user?.username) {
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 }
-        })
+        const duration = 3000
+        const end = Date.now() + duration
+
+        const frame = () => {
+          confetti({
+            particleCount: 7,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.6 },
+            zIndex: 1000
+          })
+          confetti({
+            particleCount: 7,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.6 },
+            zIndex: 1000
+          })
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame)
+          }
+        }
+        frame()
       }
     }
 
