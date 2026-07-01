@@ -34,6 +34,8 @@ export default function GamePage() {
   const [opponentName, setOpponentName] = useState('Opponent')
 
   const currentGuessRef = useRef(currentGuess)
+  const hiddenInputRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     currentGuessRef.current = currentGuess
   }, [currentGuess])
@@ -195,6 +197,9 @@ export default function GamePage() {
   // Bind Physical Keyboard
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
       const key = e.key.toUpperCase()
       if (key === 'ENTER') {
         handleKeyPress('ENTER')
@@ -406,7 +411,30 @@ export default function GamePage() {
         <div className="order-1 md:order-2 md:col-span-3 flex flex-col justify-between items-center space-y-8">
           
           {/* Main Wordle Grid */}
-          <div className="space-y-2 w-full flex flex-col items-center justify-center">
+          <div 
+            className="space-y-2 w-full flex flex-col items-center justify-center cursor-pointer"
+            onClick={() => hiddenInputRef.current?.focus()}
+          >
+            {/* Hidden input to summon native mobile keyboard */}
+            <input
+              ref={hiddenInputRef}
+              type="text"
+              className="opacity-0 absolute -z-10"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="characters"
+              spellCheck="false"
+              value={currentGuess}
+              onChange={(e) => {
+                const val = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 5)
+                setCurrentGuess(val)
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleKeyPress('ENTER')
+                }
+              }}
+            />
             {Array.from({ length: 6 }).map((_, rIndex) => renderRow(rIndex))}
             
             {guessError && (
