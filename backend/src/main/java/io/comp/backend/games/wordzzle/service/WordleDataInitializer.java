@@ -27,7 +27,10 @@ public class WordleDataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (wordRepository.count() == 0) {
+        if (wordRepository.count() != 2348) {
+            logger.info("Word count mismatch (found {}). Forcing reload of dictionary...", wordRepository.count());
+            wordRepository.deleteAll();
+            
             List<String> validWords = new java.util.ArrayList<>();
             try (java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("dictionary.txt")) {
                 if (is != null) {
@@ -48,7 +51,7 @@ public class WordleDataInitializer implements CommandLineRunner {
             }
 
             if (!validWords.isEmpty()) {
-                logger.info("Word list dictionary is empty. Seeding verified 5-letter words from dictionary.txt...");
+                logger.info("Word list dictionary is being seeded with verified 5-letter words from dictionary.txt...");
                 List<Word> wordsToSave = validWords.stream()
                         .distinct()
                         .map(w -> Word.builder().word(w).build())
@@ -59,7 +62,7 @@ public class WordleDataInitializer implements CommandLineRunner {
                 logger.warn("Seeded zero words because dictionary.txt was empty or missing.");
             }
         } else {
-            logger.info("Wordle dictionary already seeded with {} words.", wordRepository.count());
+            logger.info("Wordle dictionary is correctly seeded with {} words.", wordRepository.count());
         }
 
         seedBots();

@@ -17,6 +17,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [isConnected, setIsConnected] = useState(false)
   const socketRef = useRef<ReconnectingWebSocket | null>(null)
   const listenersRef = useRef<Map<string, Set<(payload: any) => void>>>(new Map())
+  const lastMessageRef = useRef<Map<string, any>>(new Map())
 
   useEffect(() => {
     if (!isAuthenticated || !accessToken) {
@@ -51,6 +52,12 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const message = JSON.parse(event.data)
         const { type, payload } = message
+        
+        // Cache important stateful messages
+        if (['MSG_RECONNECT', 'MATCH_FOUND', 'GAME_START'].includes(type)) {
+          lastMessageRef.current.set(type, payload)
+        }
+
         const typeListeners = listenersRef.current.get(type)
         if (typeListeners) {
           typeListeners.forEach((callback) => callback(payload))
@@ -87,6 +94,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       listenersRef.current.set(type, new Set())
     }
     listenersRef.current.get(type)!.add(callback)
+    
+    // If we missed a stateful message before subscribing, fire it immediately
+    if (['MSG_RECONNECT', 'MATCH_FOUND', 'GAME_START'].includes(type) && lastMessageRef.current.has(type)) {
+      callback(lastMessageRef.current.get(type))
+    }
   }
 
   const unsubscribe = (type: string, callback: (payload: any) => void) => {
