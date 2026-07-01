@@ -257,7 +257,7 @@ export default function GamePage() {
   const keyboardRows = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
+    ['BACK', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'ENTER']
   ]
 
   // Render player Wordle grid helper
@@ -460,15 +460,19 @@ export default function GamePage() {
                     }
 
                     const isSpecialKey = key === 'ENTER' || key === 'BACK'
-                    const keyWidth = isSpecialKey ? 'px-4' : 'w-10'
+                    const keyWidth = isSpecialKey ? 'w-12' : 'w-10'
+
+                    let displayKey = key
+                    if (key === 'BACK') displayKey = '⌫'
+                    if (key === 'ENTER') displayKey = '↵'
 
                     return (
                       <button
                         key={key}
                         onClick={() => handleKeyPress(key)}
-                        className={`h-12 ${keyWidth} rounded-lg flex items-center justify-center font-bold text-xs uppercase transition-all select-none ${keyColor}`}
+                        className={`h-12 ${keyWidth} rounded-lg flex items-center justify-center font-bold ${isSpecialKey ? 'text-lg' : 'text-xs'} uppercase transition-all select-none ${keyColor}`}
                       >
-                        {key}
+                        {displayKey}
                       </button>
                     )
                   })}
