@@ -304,14 +304,14 @@ public class WordzzleService {
         mps2.setCompleted(true);
 
         // Calculate Elo ratings change
-        double scoreA = 0.5; // default draw
+        int change1 = 0;
+        int change2 = 0;
         if (winner != null) {
-            scoreA = winner.getId().equals(p1.getId()) ? 1.0 : 0.0;
+            double scoreA = winner.getId().equals(p1.getId()) ? 1.0 : 0.0;
+            int[] eloChanges = eloRatingService.calculateElo(p1.getEloRating(), p2.getEloRating(), scoreA);
+            change1 = eloChanges[0];
+            change2 = eloChanges[1];
         }
-        
-        int[] eloChanges = eloRatingService.calculateElo(p1.getEloRating(), p2.getEloRating(), scoreA);
-        int change1 = eloChanges[0];
-        int change2 = eloChanges[1];
 
         // Apply Elo modifications
         p1.setEloRating(Math.max(100, p1.getEloRating() + change1));
@@ -364,7 +364,8 @@ public class WordzzleService {
             if (session.getPlayer1Attempts() < session.getPlayer2Attempts()) return p1;
             if (session.getPlayer2Attempts() < session.getPlayer1Attempts()) return p2;
             
-            // Guesses are equal, compare times
+            // Guesses are equal, compare times. Treat as a draw if times differ by 1 second or less.
+            if (Math.abs(session.getPlayer1SolveTimeSeconds() - session.getPlayer2SolveTimeSeconds()) <= 1) return null;
             if (session.getPlayer1SolveTimeSeconds() < session.getPlayer2SolveTimeSeconds()) return p1;
             if (session.getPlayer2SolveTimeSeconds() < session.getPlayer1SolveTimeSeconds()) return p2;
             
@@ -374,44 +375,9 @@ public class WordzzleService {
         } else if (session.isPlayer2Solved()) {
             return p2;
         } else {
-            // Neither solved - compare best attempt progress
-            int progress1 = calculateMaxCorrectLetters(session.getPlayer1Feedback());
-            int progress2 = calculateMaxCorrectLetters(session.getPlayer2Feedback());
-            if (progress1 > progress2) return p1;
-            if (progress2 > progress1) return p2;
-
-            // If correct green counts are equal, check yellow present counts
-            int yellow1 = calculateMaxPresentLetters(session.getPlayer1Feedback());
-            int yellow2 = calculateMaxPresentLetters(session.getPlayer2Feedback());
-            if (yellow1 > yellow2) return p1;
-            if (yellow2 > yellow1) return p2;
-
+            // Neither solved
             return null; // Draw
         }
-    }
-
-    private int calculateMaxCorrectLetters(List<List<FeedbackType>> feedbackList) {
-        int max = 0;
-        for (List<FeedbackType> row : feedbackList) {
-            int correct = 0;
-            for (FeedbackType f : row) {
-                if (f == FeedbackType.CORRECT) correct++;
-            }
-            max = Math.max(max, correct);
-        }
-        return max;
-    }
-
-    private int calculateMaxPresentLetters(List<List<FeedbackType>> feedbackList) {
-        int max = 0;
-        for (List<FeedbackType> row : feedbackList) {
-            int present = 0;
-            for (FeedbackType f : row) {
-                if (f == FeedbackType.PRESENT) present++;
-            }
-            max = Math.max(max, present);
-        }
-        return max;
     }
 
     private void updateUserStatistics(User user, int outcome, int attempts, Integer solveTime, boolean solved) {
