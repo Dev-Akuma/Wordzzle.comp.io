@@ -27,14 +27,15 @@ public class WordleDataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (wordRepository.count() != 2348) {
+        if (wordRepository.count() != 2494) {
             logger.info("Word count mismatch (found {}). Forcing reload of dictionary...", wordRepository.count());
             wordRepository.deleteAll();
-            
+
             List<String> validWords = new java.util.ArrayList<>();
             try (java.io.InputStream is = getClass().getClassLoader().getResourceAsStream("dictionary.txt")) {
                 if (is != null) {
-                    try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
+                    try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                            new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             line = line.trim().toUpperCase();

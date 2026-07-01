@@ -58,6 +58,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
           lastMessageRef.current.set(type, payload)
         }
 
+        if (type === 'MSG_GAME_END') {
+          lastMessageRef.current.delete('MSG_RECONNECT')
+          lastMessageRef.current.delete('MATCH_FOUND')
+          lastMessageRef.current.delete('GAME_START')
+        }
+
+
         const typeListeners = listenersRef.current.get(type)
         if (typeListeners) {
           typeListeners.forEach((callback) => callback(payload))

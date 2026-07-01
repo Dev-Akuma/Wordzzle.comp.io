@@ -79,7 +79,12 @@ public class ProfileController {
         List<MatchHistoryEntry> history = new ArrayList<>();
 
         for (Match m : matches) {
-            User opponent = m.getPlayer1().getId().equals(user.getId()) ? m.getPlayer2() : m.getPlayer1();
+            User opponent = null;
+            if (m.getPlayer1() != null && m.getPlayer1().getId().equals(user.getId())) {
+                opponent = m.getPlayer2();
+            } else {
+                opponent = m.getPlayer1();
+            }
             MatchPlayerState userState = matchPlayerStateRepository.findByMatchAndUser(m, user).orElse(null);
             
             String result = "UNFINISHED";
@@ -107,7 +112,7 @@ public class ProfileController {
 
             history.add(MatchHistoryEntry.builder()
                     .matchId(m.getId().toString())
-                    .opponentName(opponent.getUsername())
+                    .opponentName(opponent != null ? opponent.getUsername() : "Unknown")
                     .result(result)
                     .solveTimeSeconds(solveTime)
                     .attempts(attempts)
